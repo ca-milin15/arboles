@@ -1,35 +1,32 @@
 package com.example.arbolb.demo;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Nodo {
 
-	List<Integer> listaLlaves;
-	List<Nodo> nodosIzquierda;
-	List<Nodo> nodosDerecha;
+	List<Clave> listaClave = new ArrayList<>();
+	int tamanoActual;
 
-	public List<Integer> getListaLlaves() {
-		return listaLlaves;
+	public Nodo(Integer valor) {
+		tamanoActual = 1;
+		listaClave.add(new Clave(valor));
 	}
 
-	public void setListaLlaves(List<Integer> listaLlaves) {
-		this.listaLlaves = listaLlaves;
+	public Nodo(Clave clave) {
+		super();
+		listaClave.add(clave);
+		this.tamanoActual = 1;
 	}
 
-	public List<Nodo> getNodosIzquierda() {
-		return nodosIzquierda;
-	}
-
-	public void setNodosIzquierda(List<Nodo> nodosIzquierda) {
-		this.nodosIzquierda = nodosIzquierda;
-	}
-
-	public List<Nodo> getNodosDerecha() {
-		return nodosDerecha;
-	}
-
-	public void setNodosDerecha(List<Nodo> nodosDerecha) {
-		this.nodosDerecha = nodosDerecha;
-	}
-
+	
 }
