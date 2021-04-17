@@ -22,22 +22,23 @@ public class DemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
-		iniciarProcesoInsercionDato(5);
+		iniciarProcesoInsercionDato(8);
 	}
 
 	private static void iniciarProcesoInsercionDato(Integer valor) {
 		try {
 			var arbol = obtenerArbolAlmacenado();
-			var arbolMutado = buscarUbicacionParaInsertar(arbol, valor);
-			almacenarArbol(arbolMutado);
+
+			var nodoRaiz = arbol.getNodo();
+			arbol.setNodo(buscarUbicacionParaInsertar(nodoRaiz, valor));
+			almacenarArbol(arbol);
 			System.out.println(arbol);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static Arbol buscarUbicacionParaInsertar(Arbol arbol, Integer valor) {
-		var nodoRaiz = arbol.getNodo();
+	private static Nodo buscarUbicacionParaInsertar(Nodo nodoRaiz, Integer valor) {
 		if (!ObjectUtils.isEmpty(nodoRaiz)) {
 			var listaClaves = nodoRaiz.getListaClave();
 			if (listaClaves.stream().anyMatch(clave -> clave.getValorClave() == valor)) {
@@ -47,35 +48,29 @@ public class DemoApplication {
 				var siguienteClave = obtenerClaveSiguiente(listaClaves, i);
 				if (listaClaves.get(i).getValorClave() > valor) {
 					if (listaClaves.get(i).getNodoIzquierda().getTamanoActual() == 0) {
-						arbol.setNodo(insercionEnHoja(nodoRaiz, listaClaves, valor, siguienteClave));
-						break;
+						return insercionEnHoja(nodoRaiz, listaClaves, valor, siguienteClave);
+					} else {
+						listaClaves.get(i).setNodoIzquierda(buscarUbicacionParaInsertar(listaClaves.get(i).getNodoIzquierda(), valor));
 					}
 				} else if (valor > listaClaves.get(i).getValorClave()
 						&& (!ObjectUtils.isEmpty(siguienteClave) && valor < siguienteClave.getValorClave())) {
 					if (listaClaves.get(i).getNodoDerecha().getTamanoActual() == 0
 							&& siguienteClave.getNodoIzquierda().getTamanoActual() == 0) {
-						arbol.setNodo(insercionEnHoja(nodoRaiz, listaClaves, valor, siguienteClave));
-						break;
+						return insercionEnHoja(nodoRaiz, listaClaves, valor, siguienteClave);
 					}
 				} else if (valor > listaClaves.get(i).getValorClave() && ObjectUtils.isEmpty(siguienteClave)) {
-					if (listaClaves.get(i).getNodoIzquierda().getTamanoActual() == 0) {
-						arbol.setNodo(insercionEnHoja(nodoRaiz, listaClaves, valor, siguienteClave));
-						break;
+					if (listaClaves.get(i).getNodoDerecha().getTamanoActual() == 0) {
+						return insercionEnHoja(nodoRaiz, listaClaves, valor, siguienteClave);
+					} else {
+						listaClaves.get(i).setNodoDerecha(buscarUbicacionParaInsertar(listaClaves.get(i).getNodoDerecha(), valor));
 					}
+
 				}
 			}
 		} else {
-			arbol.setNodo(new Nodo(valor));
+			return new Nodo(valor);
 		}
-
-		/*
-		 * if (!ObjectUtils.isEmpty(nodoRaiz.getListaLlaves())) { for (int i = 0; i <
-		 * nodoRaiz.getListaLlaves().size(); i++) {
-		 * 
-		 * } return arbol; } else { nodoRaiz.getListaLlaves().add(valor); return arbol;
-		 * }
-		 */
-		return arbol;
+		return nodoRaiz;
 	}
 
 	private static Clave obtenerClaveSiguiente(List<Clave> listaClaves, int i) {
@@ -90,7 +85,6 @@ public class DemoApplication {
 		listaClaves.add(new Clave(valor));
 		nodoRaiz.setTamanoActual(nodoRaiz.getTamanoActual() + 1);
 		Collections.sort(listaClaves, (ref1, ref2) -> ref1.getValorClave().compareTo(ref2.getValorClave()));
-		System.out.println(listaClaves);
 		var posibleNuevoNodo = validarDimensionHoja(nodoRaiz);
 		if (!ObjectUtils.isEmpty(posibleNuevoNodo))
 			nodoRaiz = posibleNuevoNodo;
@@ -113,6 +107,7 @@ public class DemoApplication {
 		for (var i = valorInicial; i < valorFinal; i++) {
 			nodo.getListaClave().add(new Clave(listaClave.get(i).getValorClave()));
 		}
+		nodo.setTamanoActual(nodo.getListaClave().size());
 		return nodo;
 	}
 
