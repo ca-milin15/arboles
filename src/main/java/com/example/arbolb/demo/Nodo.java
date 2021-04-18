@@ -5,11 +5,13 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Nodo {
 
 	List<Clave> listaClave = new ArrayList<>();
@@ -26,12 +28,5 @@ public class Nodo {
 		super();
 		listaClave.add(clave);
 		this.tamanoActual = 1;
-	}
-
-	public Nodo() {
-		super();
-		this.listaClave = new ArrayList<>();
-		this.tamanoActual = 0;
-		this.tipoNodoClave = true;
 	}
 }

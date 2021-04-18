@@ -23,7 +23,7 @@ public class DemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
-		iniciarProcesoInsercionDato(70);
+		iniciarProcesoInsercionDato(20);
 	}
 
 	private static void iniciarProcesoInsercionDato(Integer valor) {
@@ -102,7 +102,8 @@ public class DemoApplication {
 			if (!ObjectUtils.isEmpty(posiblClaveResProceso)) {
 				listaClavesNodoDerecha.add(posiblClaveResProceso);
 				nodoRaiz.setTamanoActual(nodoRaiz.getTamanoActual() + 1);
-				Collections.sort(listaClavesNodoDerecha, (ref1, ref2) -> ref1.getValorClave().compareTo(ref2.getValorClave()));
+				Collections.sort(listaClavesNodoDerecha,
+						(ref1, ref2) -> ref1.getValorClave().compareTo(ref2.getValorClave()));
 				validarDimensionHoja(nodoRaiz, nodoPadre);
 				break;
 			}
@@ -126,7 +127,7 @@ public class DemoApplication {
 			var nodoAAscender = nodoRaiz.getListaClave().get(2);
 			var nodoIzquierdo = crearNodo(nodoRaiz.getListaClave(), 0, 2);
 			var nodoDerecho = crearNodo(nodoRaiz.getListaClave(), 2, 5);
-			if (ObjectUtils.isEmpty(nodoPadre) && nodoRaiz.isTipoNodoClave()) {
+			if (ObjectUtils.isEmpty(nodoPadre)) {
 				nodoRaiz.setListaClave(new ArrayList<Clave>() {
 					private static final long serialVersionUID = 7648394616362347399L;
 					{
@@ -139,6 +140,8 @@ public class DemoApplication {
 				nodoPadre.getListaClave().add(new Clave(nodoAAscender.getValorClave(), nodoIzquierdo, nodoDerecho));
 				nodoPadre.setTamanoActual(nodoPadre.getListaClave().size());
 			}
+			if (!ObjectUtils.isEmpty(nodoPadre))
+				validarDimensionHoja(nodoPadre, null);
 			System.out.println(nodoPadre);
 		}
 	}
